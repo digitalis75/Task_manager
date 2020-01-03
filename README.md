@@ -1,6 +1,6 @@
 # Code Institute
 
-Welcome Anastasia Tuzhilina,
+Welcome,
 
 We have preinstalled all of the tools you need to get started.
 
