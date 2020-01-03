@@ -5,25 +5,23 @@ from bson.objectid import ObjectId
 
 app = Flask(__name__)
 
-app.config["MONGO_DBNAME"] = 'task_manager'
-app.config["MONGO_URI"] = '''mongodb+srv://digitalis:digita1isUser
-                             @myfirstcluster-kzjwa.mongodb.net/
-                             task_manager?retryWrites=true&w=majority'''
+app.config["MONGO_DBNAME"] = "task_manager"
+app.config["MONGO_URI"] = '''mongodb+srv://digitalis:digita1isUser@myfirstcluster-kzjwa.mongodb.net/task_manager?retryWrites=true&w=majority'''
 
 mongo = PyMongo(app)
 
 
 @app.route('/')
-@app.route('/get_tasks')
-def get_tasks():
-    return render_template("tasks.html",
-                           tasks=mongo.db.tasks.find())
-
-
 @app.route('/add_task')
 def add_task():
     return render_template('addtask.html',
                            categories=mongo.db.categories.find())
+
+
+@app.route('/get_tasks')
+def get_tasks():
+    return render_template("tasks.html",
+                           tasks=mongo.db.tasks.find())
 
 
 @app.route('/insert_task', methods=['POST'])
@@ -53,6 +51,12 @@ def update_task(task_id):
                                request.form.get('task_description'),
                                'due_date': request.form.get('due_date'),
                                'is_urgent': request.form.get('is_urgent')}})
+    return redirect(url_for('get_tasks'))
+
+
+@app.route('/delete_task/<task_id>')
+def delete_task(task_id):
+    mongo.db.tasks.delete_one({'_id': ObjectId(task_id)})
     return redirect(url_for('get_tasks'))
 
 
