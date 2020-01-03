@@ -12,16 +12,16 @@ mongo = PyMongo(app)
 
 
 @app.route('/')
-@app.route('/add_task')
-def add_task():
-    return render_template('addtask.html',
-                           categories=mongo.db.categories.find())
-
-
 @app.route('/get_tasks')
 def get_tasks():
     return render_template("tasks.html",
                            tasks=mongo.db.tasks.find())
+
+
+@app.route('/add_task')
+def add_task():
+    return render_template('addtask.html',
+                           categories=mongo.db.categories.find())
 
 
 @app.route('/insert_task', methods=['POST'])
@@ -58,6 +58,27 @@ def update_task(task_id):
 def delete_task(task_id):
     mongo.db.tasks.delete_one({'_id': ObjectId(task_id)})
     return redirect(url_for('get_tasks'))
+
+
+@app.route('/get_categories')
+def get_categories():
+    return render_template('categories.html',
+                           categories=mongo.db.categories.find())
+
+
+@app.route('/edit_category/<category_id>')
+def edit_category(category_id):
+    return render_template('editcategory.html',
+                           category=mongo.db.categories.find_one({'_id':
+                                                                  ObjectId(category_id)}))
+
+
+@app.route('/update_category/<category_id>', methods=['POST'])
+def update_category(category_id):
+    mongo.db.categories.update_one(
+        {'_id': ObjectId(category_id)},
+        {'$set': {'category_name': request.form.get('category_name')}})
+    return redirect(url_for('get_categories'))
 
 
 if __name__ == "__main__":
