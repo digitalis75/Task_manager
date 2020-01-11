@@ -12,16 +12,16 @@ mongo = PyMongo(app)
 
 
 @app.route('/')
-@app.route('/get_categories')
-def get_categories():
-    return render_template('categories.html',
-                           categories=mongo.db.categories.find())
-
-
 @app.route('/get_tasks')
 def get_tasks():
     return render_template("tasks.html",
                            tasks=mongo.db.tasks.find())
+
+
+@app.route('/get_categories')
+def get_categories():
+    return render_template('categories.html',
+                           categories=mongo.db.categories.find())
 
 
 @app.route('/add_task')
@@ -102,4 +102,4 @@ def add_category():
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),
-            debug=True)
+            debug=False)
